@@ -270,8 +270,12 @@ function addProduct() {
  * @returns undefined
  */
 function showProducts() {
-  /* Útfæra */
-  /* Hér ætti að nota `formatPrice` hjálparfall */
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+    const formattedPrice = formatPrice(product.price);
+
+    console.log(`#${product.id} ${product.title} — ${product.description} — ${formattedPrice}`);
+  }
 }
 
 /**
@@ -290,7 +294,6 @@ function showProducts() {
  * @returns undefined
  */
 function addProductToCart() {
-  debugger;
   const productIdAsString = prompt ('Auðkenni við vöru sem á að bæta við körfu')
 
   //TODO validatea að þetta sé í raun tala sem er vara og ekki null
@@ -334,7 +337,17 @@ function addProductToCart() {
  * @returns undefined
  */
 function showCart() {
-  /* Útfæra */
+  if (cart.lines.length === 0) {
+    console.log('Karfan er tóm.');
+    return;
+  }
+  let totalCost = 0;
+  for (const line of cart.lines) {
+    const productCost = line.product.price * line.quantity;
+    totalCost += productCost;
+    console.log(formatProduct(line.product, line.quantity));
+  }
+  console.log(`Samtals: ${formatPrice(totalCost)} kr.`);
 }
 
 /**
@@ -356,5 +369,29 @@ function showCart() {
  * @returns undefined
  */
 function checkout() {
-  /* Útfæra */
+  if (cart.lines.length === 0) {
+    console.log('Karfan er tóm.');
+    return;
+  }
+
+  const nafn = prompt('Hvað er nafnið þitt?');
+  const heimilisfang = prompt('Hvað er heimilisfangið þitt?');
+
+  if (!nafn || !heimilisfang) {
+    console.error('Nafn og heimilisfang mega ekki vera tóm.');
+    return;
+  }
+
+  console.log(`Pöntun móttekin ${nafn}.`);
+  console.log(`Vörur verða sendar á ${heimilisfang}.\n`);
+
+  let totalCost = 0;
+
+for (const line of cart.lines) {
+    const productCost = line.product.price * line.quantity;
+    totalCost += productCost;
+    
+    console.log(formatProduct(line.product, line.quantity));
+}
+console.log(`Samtals: ${formatPrice(totalCost)} kr.`);
 }
